@@ -11,11 +11,11 @@ namespace Game1
     {
         Random rnd = new Random();
         Population population = null;
-        int size = 30;
+        int size = 50;
 
-        private IEnumerable<byte> getDNA()
+        private IEnumerable<byte> getDNA(int from = 20, int to = 60)
         {
-            int length = rnd.Next(10,30) * 4;
+            int length = rnd.Next(from, to) * 4;
             byte[] dna = new byte[length];
             for (int i = 0; i < length; i++)
             {
@@ -60,7 +60,8 @@ namespace Game1
                 List<int> indexWheel = new List<int>();
                 for (int i = 0; i < population.Size; i++)
                 {
-                    int value = ((population.Genes.ElementAt(i).Fitness - (best.Fitness / 2)) * 20) / best.Fitness;
+                    int value = (((population.Genes.ElementAt(i).Fitness - (best.Fitness / 2)) * (size / 5)) / best.Fitness);
+
                     for (int j = 0; j < value; j++)
                     {
                         indexWheel.Add(i);
@@ -77,10 +78,12 @@ namespace Game1
                     yield return new Gene(getDNA());
                 }
             }
-
-            for (int i = 0; i < size; i++)
+            else
             {
-                yield return new Gene(getDNA());
+                for (int i = 0; i < size; i++)
+                {
+                    yield return new Gene(getDNA());
+                }
             }
 
         }
@@ -106,13 +109,27 @@ namespace Game1
             }
             return new Gene(Mutate(c));
         }
-        private byte[] Mutate(byte[] g)
+        private IEnumerable<byte> Mutate(byte[] g)
         {
             for (int i = 0; i < g.Count(); i++)
             {
                 if (rnd.Next(0,20) == 0)
                 {
                     g[i] = (byte)(Math.Abs(g[i] + rnd.Next(-127, 127)) % 255); 
+                }
+            }
+            if (rnd.Next(0, 10) == 0)
+            {
+                List<byte> n = new List<byte>(g);
+                n.AddRange(getDNA(1, 4));
+                return n;
+            }
+            if (rnd.Next(0, 10) == 0)
+            {
+                int length = g.Count() - rnd.Next(1, 4) * 4;
+                if (length > 12)
+                {
+                    return g.Take(length);
                 }
             }
             return g;

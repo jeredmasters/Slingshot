@@ -12,29 +12,38 @@ namespace Game1
     {
         public Muscle()
         {
-
+            OscRange = 0;
+            OscState = 0;
+            OscDirection = false;
         }
         public void SetupGraphics(GraphicsDevice GraphicsDevice)
         {
             Texture = new Texture2D(GraphicsDevice, 10, 10);
             Color[] colorData2 = new Color[10 * 10];
+            Color = new Color((255 - Strength), 10, 10);
             for (int i = 0; i < 100; i++)
-                colorData2[i] = new Color(Strength, 255, Strength);
+                colorData2[i] = Color;
 
             Texture.SetData<Color>(colorData2);
         }
         public Texture2D Texture;
 
-        public Int16 Strength;
-        public Int16 LengthAlpha;
-        public Int16? Length = null;
-        public Int16 NodeP;
-        public Int16 NodeC;
+        public byte Strength;
+        public float Length;
+        public byte LengthAlpha;
+        public byte NodeP;
+        public byte NodeC;
+        public Color Color;
 
         public Vector2 PosP;
         public Vector2 PosC;
 
         public short ID;
-        
+
+        public byte OscRange;
+        public float OscSpeed;
+        public float OscState;
+        public bool OscDirection;
+
     }
 }

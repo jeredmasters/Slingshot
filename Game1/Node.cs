@@ -13,17 +13,21 @@ namespace Game1
         public Node ()
         {
             Speed = new Vector2(0, 0);
+            Muscles = new List<Muscle>();
         }
 
         public void SetupGraphics(GraphicsDevice GraphicsDevice)
         {
-            Texture = new Texture2D(GraphicsDevice, 10, 10);
-            Color[] colorData2 = new Color[10 * 10];
-            for (int i = 0; i < 100; i++)
-                colorData2[i] = new Color(Weight, 255, Weight);
+            int x = Utility.Scale(10);
+            Texture = new Texture2D(GraphicsDevice, x, x);
+            Color[] colorData2 = new Color[x * x];
+            for (int i = 0; i < (x * x); i++)
+                colorData2[i] = new Color(80, (255 - Weight), 80);
 
             Texture.SetData<Color>(colorData2);
         }
+
+        public List<Muscle> Muscles;
 
         public Texture2D Texture;
 
