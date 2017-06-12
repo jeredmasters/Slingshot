@@ -20,9 +20,11 @@ namespace Game1
         Statistics Stats;
         GenerationStat CurrentGeneration;
         bool firstClick = true;
-        Vector2 Gravity = new Vector2(0, Utility.Scale(0.05));
+        Vector2 Gravity = new Vector2(0, Utility.Scale(0.1));
         bool activeGravity = true;
         KeyboardState previousState;
+        Animal Fittest = null;
+        int Clipping = 0;
 
         int rate = 5;
         const int maxY = 1000;
@@ -64,8 +66,19 @@ namespace Game1
         {
             if (CurrentGeneration != null)
             {
-                //Stats.GenStat.Add(CurrentGeneration);
+                Stats.GenStat.Add(CurrentGeneration);
                 
+            }
+            if (animals != null)
+            {
+                foreach(var a in animals)
+                {
+                    a.Dispose();
+                }
+            }
+            if (Fittest != null && Fittest.ID != 0)
+            {
+                Stats.Leaps++;
             }
             animals = new List<Animal>();
             population = Breeder.getNextGeneration();
@@ -73,9 +86,12 @@ namespace Game1
             firstClick = true;
             foreach (Gene gene in population.Genes)
             {
-                animals.Add(new Animal(gene, GraphicsDevice, Starting));
+                animals.Add(new Animal(gene, GraphicsDevice, Starting, animals.Count));
             }
             lastGeneration = DateTime.Now;
+            clicks = 0;
+            Clipping = 0;
+            Fittest = null;
         }
 
 
@@ -101,6 +117,7 @@ namespace Game1
         {
             // TODO: Unload any non ContentManager content here
         }
+        int clicks = 0;
         Random rnd = new Random();
         /// <summary>
         /// Allows the game to run logic such as updating the world,
@@ -110,13 +127,14 @@ namespace Game1
         protected override void Update(GameTime gameTime)
         {
             ProcessInput();
-            if ((DateTime.Now - lastGeneration).TotalSeconds >= (30 / rate))
+            if (clicks >= 2000)
             {
                 populate();
             }
             for(int i = 0; i < rate; i++)
             {
-                ProcessPhysics();
+                clicks++;
+                Fittest = ProcessPhysics();
                 ProcessInput();
             }
 
@@ -145,12 +163,10 @@ namespace Game1
             }
             previousState = Keyboard.GetState();
         }
-        private void DrawStats()
+        
+        private Animal ProcessPhysics()
         {
-            spriteBatch.DrawString(font, "Rate: " + rate, new Vector2(50, 50), Color.Black);
-        }
-        private void ProcessPhysics()
-        {
+            Animal fittest = null;
             foreach (var animal in animals)
             {
                 animal.Fitness = 0;// rnd.Next(0, 255);
@@ -216,11 +232,18 @@ namespace Game1
                     //    animal.Fitness += (int)(floor - node.Position.Y);
                     //}
                     var fitness = (int)((floor - node.Position.Y) * (node.Position.X - 100));
-                    animal.Fitness += fitness;
+                    if (fitness > animal.Fitness)
+                    {
+                        animal.Fitness = fitness;
+                    }
                 }
                 if (!onGround)
                 {
                     animal.Fitness = 0;
+                }
+                if (fittest == null || animal.Fitness > fittest.Fitness)
+                {
+                    fittest = animal;
                 }
             }
             if (firstClick)
@@ -230,6 +253,7 @@ namespace Game1
             }
             firstClick = false;
 
+            return fittest;            
         }
         private Vector2 FindGravityForce(Node node)
         {
@@ -249,7 +273,7 @@ namespace Game1
                 var contract = (m.Length < distance);
                 var delta = Math.Abs(distance - (short)m.Length);
                 var pressure = Math.Pow(delta / 4, 3);
-                var balance = (500000 / m.Strength);
+                var balance = (1000000 / m.Strength);
                 var relative = pressure / balance;
                     
                 var mForce = new Vector2((float)(a.X * relative),(float)(a.Y * relative));
@@ -257,9 +281,10 @@ namespace Game1
                 {
                     mForce = new Vector2(0, 0);
                 }
-                while (mForce.Length() > 20)
+                while (mForce.Length() > 150)
                 {
                     mForce = mForce / 10;
+                    Clipping++;
                 }
                 force += (mForce * (contract ? -1 : 1));
                 if (firstClick)
@@ -272,7 +297,7 @@ namespace Game1
         }
         private Vector2 FindFrictionForce(Node node)
         {
-            return node.Speed / -5;
+            return node.Speed * -2;
         }
 
         /// <summary>
@@ -295,14 +320,14 @@ namespace Game1
         }
 
         private void DrawAnimal(Animal animal)
-        {
-            foreach(Node node in animal.Nodes)
-            {
-                spriteBatch.Draw(node.Texture, node.Position);
-            }            
+        {                
             foreach(Muscle m in animal.Muscles)
             {                                
                 DrawLine(m);
+            }
+            foreach (Node node in animal.Nodes)
+            {
+                spriteBatch.Draw(node.Texture, node.Position - node.Offest);
             }
         }
         void DrawLine(Muscle muscle)
@@ -325,6 +350,19 @@ namespace Game1
                 SpriteEffects.None,
                 0);
 
+        }
+        private void DrawStats()
+        {
+            string[] data = new string[]
+            {
+                "Generation: " + Stats.GenStat.Count,
+                "Rate: " + rate,
+                "Clicks: " + clicks,
+                "Fittest: " + (Fittest == null ? "n/a" : Fittest.ID.ToString() + "(" + Fittest.Fitness.ToString() +")"),
+                "Leaps: " + Stats.Leaps,
+                "Clipping: " + Clipping
+            };
+            spriteBatch.DrawString(font, string.Join("\n", data), new Vector2(50, 50), Color.Black);
         }
     }
 }

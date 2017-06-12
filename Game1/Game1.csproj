@@ -45,6 +45,7 @@
     <Compile Include="Breeder.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Gene.cs" />
+    <Compile Include="Graph.cs" />
     <Compile Include="Muscle.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="Population.cs" />

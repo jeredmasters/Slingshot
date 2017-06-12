@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Game1
 {
-    public class Node
+    public class Node : IDisposable
     {
         public Node ()
         {
@@ -19,6 +19,7 @@ namespace Game1
         public void SetupGraphics(GraphicsDevice GraphicsDevice)
         {
             int x = Utility.Scale(10);
+            Offest = new Vector2(x / 2, x / 2);
             Texture = new Texture2D(GraphicsDevice, x, x);
             Color[] colorData2 = new Color[x * x];
             for (int i = 0; i < (x * x); i++)
@@ -27,10 +28,17 @@ namespace Game1
             Texture.SetData<Color>(colorData2);
         }
 
+        public void Dispose()
+        {
+            Texture.Dispose();
+            Muscles = null;
+        }
+
         public List<Muscle> Muscles;
 
         public Texture2D Texture;
 
+        public Vector2 Offest;
         public Vector2 Position;
         public Vector2 Speed;
 

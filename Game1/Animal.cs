@@ -8,15 +8,18 @@ using System.Threading.Tasks;
 
 namespace Game1
 {
-    public class Animal
+    public class Animal : IDisposable
     {
         public Gene Gene;
         public List<Node> Nodes = new List<Node>();
         public List<Muscle> Muscles = new List<Muscle>();
+        public int ID;
 
-        public Animal(Gene gene, GraphicsDevice GraphicsDevice, Vector2 startingPosition)
+        public Animal(Gene gene, GraphicsDevice GraphicsDevice, Vector2 startingPosition, int id)
         {
+            ID = id;
             Gene = gene;
+            Fitness = 0;
             int length = Gene.Length() - 4;
             byte cut3 = 30;
             byte cut2 = (byte)(cut3 + 15);            
@@ -62,8 +65,8 @@ namespace Game1
                 {
                     var subDna = Gene.Slice(i, 4);
                     var node = subDna[1] % Nodes.Count;
-                    var x = (float)subDna[2] / 200;
-                    var y = (float)subDna[3] / 200;
+                    var x = (float)subDna[2] / 100;
+                    var y = (float)subDna[3] / 100;
                     Nodes[node].Speed.X = x;
                     Nodes[node].Speed.Y = y;
                 }
@@ -85,6 +88,18 @@ namespace Game1
         {
             get { return Gene.Fitness; }
             set { Gene.Fitness = value; }
+        }
+
+        public void Dispose()
+        {
+            foreach(var n in Nodes)
+            {
+                n.Dispose();
+            }
+            foreach(var m in Muscles)
+            {
+                m.Dispose();
+            }
         }
     }
 }

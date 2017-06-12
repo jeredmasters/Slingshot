@@ -11,7 +11,7 @@ namespace Game1
     {
         Random rnd = new Random();
         Population population = null;
-        int size = 50;
+        int size = 200;
 
         private IEnumerable<byte> getDNA(int from = 20, int to = 60)
         {
@@ -118,19 +118,27 @@ namespace Game1
                     g[i] = (byte)(Math.Abs(g[i] + rnd.Next(-127, 127)) % 255); 
                 }
             }
-            if (rnd.Next(0, 10) == 0)
+            if (rnd.Next(0, 15) == 0)
             {
+                int position = rnd.Next(0, g.Count() / 4) * 4;
                 List<byte> n = new List<byte>(g);
-                n.AddRange(getDNA(1, 4));
+                n.InsertRange(position, getDNA(1, 3));
                 return n;
             }
-            if (rnd.Next(0, 10) == 0)
+            if (rnd.Next(0, 15) == 0)
             {
-                int length = g.Count() - rnd.Next(1, 4) * 4;
-                if (length > 12)
-                {
-                    return g.Take(length);
-                }
+                int position = rnd.Next(0, g.Count() / 4) * 4;
+                List<byte> n = new List<byte>(g);
+                n.RemoveRange(position, 4);
+                return n;
+            }
+            if (rnd.Next(0, 15) == 0)
+            {
+                int position = rnd.Next(0, g.Count() / 4) * 4;
+                List<byte> n = new List<byte>(g);
+                var p = n.Skip(position).Take(4).ToArray();
+                n.InsertRange(position, p);
+                return n;
             }
             return g;
         }

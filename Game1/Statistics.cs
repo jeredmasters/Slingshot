@@ -9,11 +9,13 @@ namespace Game1
     public class Statistics
     {
         public int Generation;
+        public int Leaps;
         public List<GenerationStat> GenStat;
 
         public Statistics()
         {
             Generation = 0;
+            Leaps = 0;
             GenStat = new List<GenerationStat>();
         }
     }

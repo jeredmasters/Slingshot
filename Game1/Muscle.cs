@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Game1
 {
-    public class Muscle
+    public class Muscle : IDisposable
     {
         public Muscle()
         {
@@ -26,6 +26,12 @@ namespace Game1
 
             Texture.SetData<Color>(colorData2);
         }
+
+        public void Dispose()
+        {
+            Texture.Dispose();
+        }
+
         public Texture2D Texture;
 
         public byte Strength;
