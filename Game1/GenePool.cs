@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game1
+namespace Slingshot
 {
-    public class Population
+    public class GenePool
     {
         public List<Gene> Genes;
 
-        public Population(IEnumerable<Gene> genes)
+        public GenePool(IEnumerable<Gene> genes)
         {
             Genes = genes.ToList();
         }

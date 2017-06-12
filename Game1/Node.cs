@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game1
+namespace Slingshot
 {
-    public class Node : IDisposable
+    public class Node
     {
         public Node ()
         {
@@ -16,27 +16,7 @@ namespace Game1
             Muscles = new List<Muscle>();
         }
 
-        public void SetupGraphics(GraphicsDevice GraphicsDevice)
-        {
-            int x = Utility.Scale(10);
-            Offest = new Vector2(x / 2, x / 2);
-            Texture = new Texture2D(GraphicsDevice, x, x);
-            Color[] colorData2 = new Color[x * x];
-            for (int i = 0; i < (x * x); i++)
-                colorData2[i] = new Color(80, (255 - Weight), 80);
-
-            Texture.SetData<Color>(colorData2);
-        }
-
-        public void Dispose()
-        {
-            Texture.Dispose();
-            Muscles = null;
-        }
-
         public List<Muscle> Muscles;
-
-        public Texture2D Texture;
 
         public Vector2 Offest;
         public Vector2 Position;

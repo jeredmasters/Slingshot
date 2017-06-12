@@ -43,16 +43,23 @@
   <ItemGroup>
     <Compile Include="Animal.cs" />
     <Compile Include="Breeder.cs" />
-    <Compile Include="Game1.cs" />
+    <Compile Include="Configuration.cs" />
+    <Compile Include="Main.cs" />
     <Compile Include="Gene.cs" />
     <Compile Include="Graph.cs" />
+    <Compile Include="Textures.cs" />
+    <Compile Include="Input.cs" />
+    <Compile Include="IUtility.cs" />
     <Compile Include="Muscle.cs" />
     <Compile Include="Node.cs" />
-    <Compile Include="Population.cs" />
+    <Compile Include="Physics.cs" />
+    <Compile Include="GenePool.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Species.cs" />
     <Compile Include="Statistics.cs" />
-    <Compile Include="Utility.cs" />
+    <Compile Include="Helper.cs" />
+    <Compile Include="UtilityWalker.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

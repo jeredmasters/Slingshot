@@ -6,16 +6,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game1
+namespace Slingshot
 {
-    public class Animal : IDisposable
+    public class Animal
     {
         public Gene Gene;
         public List<Node> Nodes = new List<Node>();
         public List<Muscle> Muscles = new List<Muscle>();
         public int ID;
 
-        public Animal(Gene gene, GraphicsDevice GraphicsDevice, Vector2 startingPosition, int id)
+        public Animal(Gene gene, Vector2 startingPosition, int id)
         {
             ID = id;
             Gene = gene;
@@ -33,29 +33,26 @@ namespace Game1
                     var node = new Node()
                     {
                         ID = (short)Nodes.Count,
-                        Weight = Utility.NonZero(subDna[1],10),
-                        Position = startingPosition - new Vector2(Utility.Scale(subDna[2]), Utility.Scale(subDna[3]))
+                        Weight = Helper.NonZero(subDna[1],10),
+                        Position = startingPosition - new Vector2(Helper.Scale(subDna[2]), Helper.Scale(subDna[3]))
                     };
-                    node.SetupGraphics(GraphicsDevice);
                     Nodes.Add(node);
                 }
             }
             for (short i = 0; i < length; i += 4)
-            {                
-                
+            {                                
                 if (Gene[i] >= cut2 && Gene[i] < cut1)
                 {
                     var subDna = Gene.Slice(i, 4);
                     var muscle = new Muscle()
                     {
                         ID = (short)Muscles.Count,
-                        Strength = Utility.NonZero(subDna[1], 10),
-                        Length = Utility.NonZero(Utility.Scale(subDna[2]),10),
-                        LengthAlpha = Utility.Scale(subDna[2]),
+                        Strength = Helper.NonZero(subDna[1], 10),
+                        Length = Helper.NonZero(Helper.Scale(subDna[2]),10),
+                        LengthAlpha = Helper.Scale(subDna[2]),
                         NodeP = (byte)(subDna[3] % Nodes.Count),
                         NodeC = (byte)(Muscles.Count % Nodes.Count)
                     };
-                    muscle.SetupGraphics(GraphicsDevice);
                     Muscles.Add(muscle);
                 }
             }
@@ -74,7 +71,7 @@ namespace Game1
                 {
                     var subDna = Gene.Slice(i, 4);
                     var muscle = subDna[1] % Muscles.Count;
-                    Muscles[muscle].OscRange = Utility.NonZero(Utility.Scale(subDna[2]), 10);
+                    Muscles[muscle].OscRange = Helper.NonZero(Helper.Scale(subDna[2]), 10);
                     Muscles[muscle].OscSpeed = (float)subDna[3] / 300;
                 }
             }
@@ -88,18 +85,6 @@ namespace Game1
         {
             get { return Gene.Fitness; }
             set { Gene.Fitness = value; }
-        }
-
-        public void Dispose()
-        {
-            foreach(var n in Nodes)
-            {
-                n.Dispose();
-            }
-            foreach(var m in Muscles)
-            {
-                m.Dispose();
-            }
         }
     }
 }

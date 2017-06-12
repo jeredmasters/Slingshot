@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game1
+namespace Slingshot
 {
-    public static class Utility
+    public static class Helper
     {
         public static bool GetBit(this byte b, int bitNumber)
         {

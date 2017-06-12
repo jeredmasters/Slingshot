@@ -5,21 +5,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game1
+namespace Slingshot
 {
     class Breeder
     {
-        Random rnd = new Random();
-        Population population = null;
-        int size = 200;
+        Random _rnd = new Random();
+        GenePool _genePool = null;
+        int _size = 200;
+
+        public Breeder(int populationSize)
+        {
+            _size = populationSize;
+        }
 
         private IEnumerable<byte> getDNA(int from = 20, int to = 60)
         {
-            int length = rnd.Next(from, to) * 4;
+            int length = _rnd.Next(from, to) * 4;
             byte[] dna = new byte[length];
             for (int i = 0; i < length; i++)
             {
-                dna[i] = (byte)rnd.Next(10, 255);
+                dna[i] = (byte)_rnd.Next(10, 255);
             }
             return dna;
         }
@@ -32,22 +37,22 @@ namespace Game1
             }
         }
 
-        public Population getNextGeneration()
+        public GenePool getNextGeneration()
         {
-            if (population == null)
+            if (_genePool == null)
             {
-                population = new Population(createPopulation(size));
+                _genePool = new GenePool(createPopulation(_size));
             }
             else
             {
-                population = new Population(mutate());
+                _genePool = new GenePool(mutate());
             }
-            return population;
+            return _genePool;
         }
         private IEnumerable<Gene> mutate()
         {
             Gene best = null;
-            foreach(var g in population.Genes)
+            foreach(var g in _genePool.Genes)
             {
                 if (best == null || g.Fitness > best.Fitness)
                 {
@@ -58,19 +63,19 @@ namespace Game1
             if (best != null && best.Fitness > 0)
             {
                 List<int> indexWheel = new List<int>();
-                for (int i = 0; i < population.Size; i++)
+                for (int i = 0; i < _genePool.Size; i++)
                 {
-                    int value = (((population.Genes.ElementAt(i).Fitness - (best.Fitness / 2)) * (size / 5)) / best.Fitness);
+                    int value = (((_genePool.Genes.ElementAt(i).Fitness - (best.Fitness / 2)) * (_size / 5)) / best.Fitness);
 
                     for (int j = 0; j < value; j++)
                     {
                         indexWheel.Add(i);
                     }
                 }
-                for (int i = 0; i < size; i++)
+                for (int i = 0; i < _size; i++)
                 {
-                    var a = population.Genes.ElementAt(indexWheel[rnd.Next(0, indexWheel.Count)]);
-                    var b = population.Genes.ElementAt(indexWheel[rnd.Next(0, indexWheel.Count)]);
+                    var a = _genePool.Genes.ElementAt(indexWheel[_rnd.Next(0, indexWheel.Count)]);
+                    var b = _genePool.Genes.ElementAt(indexWheel[_rnd.Next(0, indexWheel.Count)]);
                     yield return Copulate(a, b);
                 }
                 for (int i = 0; i < 5; i++)
@@ -80,7 +85,7 @@ namespace Game1
             }
             else
             {
-                for (int i = 0; i < size; i++)
+                for (int i = 0; i < _size; i++)
                 {
                     yield return new Gene(getDNA());
                 }
@@ -94,7 +99,7 @@ namespace Game1
             byte[] c = new byte[length];
             for(int i = 0; i < length; i++)
             {
-                if(rnd.Next(0,10) == 0)
+                if(_rnd.Next(0,10) == 0)
                 {
                     sw = !sw;
                 }
@@ -113,28 +118,28 @@ namespace Game1
         {
             for (int i = 0; i < g.Count(); i++)
             {
-                if (rnd.Next(0,20) == 0)
+                if (_rnd.Next(0,20) == 0)
                 {
-                    g[i] = (byte)(Math.Abs(g[i] + rnd.Next(-127, 127)) % 255); 
+                    g[i] = (byte)(Math.Abs(g[i] + _rnd.Next(-127, 127)) % 255); 
                 }
             }
-            if (rnd.Next(0, 15) == 0)
+            if (_rnd.Next(0, 15) == 0)
             {
-                int position = rnd.Next(0, g.Count() / 4) * 4;
+                int position = _rnd.Next(0, g.Count() / 4) * 4;
                 List<byte> n = new List<byte>(g);
                 n.InsertRange(position, getDNA(1, 3));
                 return n;
             }
-            if (rnd.Next(0, 15) == 0)
+            if (_rnd.Next(0, 15) == 0)
             {
-                int position = rnd.Next(0, g.Count() / 4) * 4;
+                int position = _rnd.Next(0, g.Count() / 4) * 4;
                 List<byte> n = new List<byte>(g);
                 n.RemoveRange(position, 4);
                 return n;
             }
-            if (rnd.Next(0, 15) == 0)
+            if (_rnd.Next(0, 15) == 0)
             {
-                int position = rnd.Next(0, g.Count() / 4) * 4;
+                int position = _rnd.Next(0, g.Count() / 4) * 4;
                 List<byte> n = new List<byte>(g);
                 var p = n.Skip(position).Take(4).ToArray();
                 n.InsertRange(position, p);
