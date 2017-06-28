@@ -26,10 +26,9 @@ namespace Slingshot
                         onGround = true;
                     }
                     var fitness = (int)((_floor - node.Position.Y) * (node.Position.X - 100));
-                    if (fitness > animal.Fitness)
-                    {
-                        animal.Fitness = fitness;
-                    }
+
+                    animal.Fitness = fitness;
+                    
                 }
                 if (!onGround)
                 {

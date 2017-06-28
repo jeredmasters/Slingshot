@@ -12,29 +12,38 @@ namespace Slingshot
         Breeder _breeder;
         public List<Animal> Animals;
         public Animal Fittest = null;
-        GenePool _genepool;
-        public int Leaps;
+        List<Chromosome> _genepool;
         Vector2 _startingPosition;
+        int _leaps = 0;
 
-        public Species(Vector2 startingPosition, int populationSize)
+        public Species(Vector2 startingPosition, Configuration configuration)
         {
             _startingPosition = startingPosition;
-            _breeder = new Breeder(populationSize);
+            _breeder = new Breeder(configuration.PopulationSize, configuration.MutationRate, configuration.CrossoverRate, configuration.SelectionPressure);
         }
 
         public void NewGeneration()
         {
             if (Fittest != null && Fittest.ID != 0)
             {
-                Leaps++;
+                _leaps++;
             }
             Animals = new List<Animal>();
             _genepool = _breeder.getNextGeneration();
-            foreach (Gene gene in _genepool.Genes)
+            foreach (Chromosome gene in _genepool)
             {
                 Animals.Add(new Animal(gene, _startingPosition, Animals.Count));
             }
             Fittest = null;
+        }
+
+        public int Generation
+        {
+            get { return _breeder.Generation; }
+        }
+        public int Leaps
+        {
+            get { return _leaps; }
         }
     }
 }

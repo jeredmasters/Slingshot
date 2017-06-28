@@ -19,7 +19,7 @@ namespace Slingshot
         public static int Scale(int a)
         {
             return (int)Scale((double)a);
-        } 
+        }
         public static float Scale(float a)
         {
             return Scale((double)a);
@@ -36,5 +36,31 @@ namespace Slingshot
             }
             return a;
         }
+        public static Feature ReadGene(byte b)
+        {
+            byte cut3 = 30;
+            byte cut2 = (byte)(cut3 + 15);
+            byte cut1 = (byte)(cut2 + 120);
+            if (b >= cut1)
+            {
+                return Feature.Node;
+            }
+            if (b >= cut2)
+            {
+                return Feature.Muscle;
+            }
+            if (b >= cut3)
+            {
+                return Feature.NodeSpeed;
+            }
+            return Feature.MuscleOscillation;
+        }
+    }
+    public enum Feature
+    {
+        Muscle,
+        Node,
+        NodeSpeed,
+        MuscleOscillation
     }
 }

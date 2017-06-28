@@ -10,26 +10,25 @@ namespace Slingshot
 {
     public class Animal
     {
-        public Gene Gene;
+        public Chromosome Chromosome;
         public List<Node> Nodes = new List<Node>();
         public List<Muscle> Muscles = new List<Muscle>();
         public int ID;
+        public bool Retard;
 
-        public Animal(Gene gene, Vector2 startingPosition, int id)
+        public Animal(Chromosome chromosome, Vector2 startingPosition, int id)
         {
             ID = id;
-            Gene = gene;
+            Chromosome = chromosome;
             Fitness = 0;
-            int length = Gene.Length() - 4;
-            byte cut3 = 30;
-            byte cut2 = (byte)(cut3 + 15);            
-            byte cut1 = (byte)(cut2 + 120);
-            
+            int length = Chromosome.Length - 4;
+            Retard = false;
+
             for (short i = 0; i < length; i += 4)
             {                
-                if (Gene[i] >= cut1 || i == 0)
+                if (Helper.ReadGene(Chromosome[i]) == Feature.Node)
                 {
-                    var subDna = Gene.Slice(i, 4);
+                    var subDna = Chromosome.Slice(i, 4);
                     var node = new Node()
                     {
                         ID = (short)Nodes.Count,
@@ -39,11 +38,17 @@ namespace Slingshot
                     Nodes.Add(node);
                 }
             }
+            if (Nodes.Count == 0)
+            {
+                Retard = true;
+                Muscles.Clear();
+                return;
+            }
             for (short i = 0; i < length; i += 4)
-            {                                
-                if (Gene[i] >= cut2 && Gene[i] < cut1)
+            {
+                if (Helper.ReadGene(Chromosome[i]) == Feature.Muscle)
                 {
-                    var subDna = Gene.Slice(i, 4);
+                    var subDna = Chromosome.Slice(i, 4);
                     var muscle = new Muscle()
                     {
                         ID = (short)Muscles.Count,
@@ -56,20 +61,26 @@ namespace Slingshot
                     Muscles.Add(muscle);
                 }
             }
+            if (Muscles.Count == 0)
+            {
+                Retard = true;
+                Nodes.Clear();
+                return;
+            }
             for (short i = 0; i < length; i += 4)
-            {                
-                if (Gene[i] >= cut3 && Gene[i] < cut2)
+            {
+                if (Helper.ReadGene(Chromosome[i]) == Feature.NodeSpeed)
                 {
-                    var subDna = Gene.Slice(i, 4);
+                    var subDna = Chromosome.Slice(i, 4);
                     var node = subDna[1] % Nodes.Count;
                     var x = (float)subDna[2] / 100;
                     var y = (float)subDna[3] / 100;
-                    Nodes[node].Speed.X = x;
-                    Nodes[node].Speed.Y = y;
+                    Nodes[node].Velocity.X = x;
+                    Nodes[node].Velocity.Y = y;
                 }
-                if (Gene[i] < cut3)
+                if (Helper.ReadGene(Chromosome[i]) == Feature.MuscleOscillation)
                 {
-                    var subDna = Gene.Slice(i, 4);
+                    var subDna = Chromosome.Slice(i, 4);
                     var muscle = subDna[1] % Muscles.Count;
                     Muscles[muscle].OscRange = Helper.NonZero(Helper.Scale(subDna[2]), 10);
                     Muscles[muscle].OscSpeed = (float)subDna[3] / 300;
@@ -80,11 +91,28 @@ namespace Slingshot
                 Nodes[m.NodeC].Muscles.Add(m);
                 Nodes[m.NodeP].Muscles.Add(m);
             }
+            foreach(var n in Nodes)
+            {
+                if (n.Muscles.Count == 0)
+                {
+                    Retard = true;
+                }
+            }
         }
         public int Fitness
         {
-            get { return Gene.Fitness; }
-            set { Gene.Fitness = value; }
+            get { return Chromosome.Fitness; }
+            set
+            {
+                if (!Retard)
+                {
+                    Chromosome.Fitness = value;
+                }
+            }
+        }
+        public string Species
+        {
+            get { return Chromosome.Species();  }
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Slingshot
         IUtility _utility;
         
         
-        int rate = 5;
+        int _rate = 5;
 
         const int WindowHeight = 1000;
         const int WindowWidth = 1800;
@@ -55,11 +55,13 @@ namespace Slingshot
         /// </summary>
         protected override void Initialize()
         {
+            ConfigurationWindow window = new ConfigurationWindow();
+            window.ShowDialog();
             _stats = new Statistics();
             _input = new Input();
-            _config = new Configuration();
+            _config = new Configuration(Slingshot.Properties.Settings.Default.PropertyValues);
             _textures = new Textures(GraphicsDevice);
-            _species = new Species(_startingPosition, _config.PopulationSize);
+            _species = new Species(_startingPosition, _config);
             _physics = new Physics(Floor, WindowWidth, WindowHeight, Helper.Scale(0.2));
             _utility = new UtilityWalker(Floor);
 
@@ -112,19 +114,45 @@ namespace Slingshot
         protected override void Update(GameTime gameTime)
         {
             
-            if (clicks >= 2000)
+            if (clicks >= _config.Duration)
             {
                 NewGeneration();
             }
-            for(int i = 0; i < rate; i++)
+            for(int i = 0; i < _rate; i++)
             {
                 clicks++;
                 _physics.ProcessPhysics(_species.Animals);
                 _species.Fittest = _utility.Evaluate(_species.Animals);
-                _input.ProcessInput();
+                ProcessInput();
             }
 
             base.Update(gameTime);
+        }
+
+        protected void ProcessInput()
+        {
+            var keys = _input.ProcessInput();
+            foreach(var key in keys)
+            {
+                switch (key)
+                {
+                    case Keys.Up:
+                        _rate++;
+                        break;
+                    case Keys.Down:
+                        _rate--;
+                        break;
+                }
+            }
+            if (_rate < 1)
+            {
+                _rate = 1;
+            }
+            if (_rate > 30)
+            {
+                _rate = 30;
+            }
+
         }
         
         
@@ -185,11 +213,11 @@ namespace Slingshot
         {
             string[] data = new string[]
             {
-                "Generation: " + _stats.GenStat.Count,
-                "Rate: " + rate,
+                "Generation: " +  _species.Generation,
+                "Rate: " + _rate,
                 "Clicks: " + clicks,
-                "Fittest: " + (_species.Fittest == null ? "n/a" : _species.Fittest.ID.ToString() + "(" + _species.Fittest.Fitness.ToString() +")"),
-                "Leaps: " + _stats.Leaps,
+                "Fittest: " + (_species.Fittest == null ? "n/a" : _species.Fittest.ID.ToString() + "("+_species.Fittest.Fitness+")" + "(" + _species.Fittest.Species +")"),
+                "Leaps: " + _species.Leaps,
                 "Clipping: " + _physics.Clipping
             };
             _spriteBatch.DrawString(_font, string.Join("\n", data), new Vector2(50, 50), Color.Black);

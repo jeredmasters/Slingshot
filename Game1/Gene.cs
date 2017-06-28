@@ -9,19 +9,20 @@ namespace Slingshot
     public class Gene
     {
         public IEnumerable<byte> DNA;
-        public int Fitness;
+        private int _length;
         public Gene(IEnumerable<byte> dna)
         {
             DNA = dna;
+            _length = DNA.Count();
         }
 
         public byte this[int index]
         {
             get { return DNA.ElementAt(index); }
         }
-        public int Length()
+        public int Length
         {
-            return DNA.Count();
+            get { return _length; }
         }
         public Gene Slice(int from, int count)
         {

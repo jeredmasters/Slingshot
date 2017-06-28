@@ -12,7 +12,7 @@ namespace Slingshot
     {
         public Node ()
         {
-            Speed = new Vector2(0, 0);
+            Velocity = new Vector2(0, 0);
             Muscles = new List<Muscle>();
         }
 
@@ -20,7 +20,7 @@ namespace Slingshot
 
         public Vector2 Offest;
         public Vector2 Position;
-        public Vector2 Speed;
+        public Vector2 Velocity;
 
         public short ID;
         public Int16 Weight;

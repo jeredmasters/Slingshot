@@ -27,6 +27,8 @@ namespace Slingshot
                 keys.Remove(key);
             }
 
+            _previousState = Keyboard.GetState();
+
             return keys;        
         }
     }
