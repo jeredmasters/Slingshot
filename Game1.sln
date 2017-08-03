@@ -5,16 +5,38 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slingshot", "Game1\Slingshot.csproj", "{DBC2F3F3-CEC7-4C28-8688-B58F4937D4E3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaOrm", "NovaOrm\NovaOrm.csproj", "{CC93862F-C771-433F-9EB9-DA10C6D2AD4E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DBC2F3F3-CEC7-4C28-8688-B58F4937D4E3}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{DBC2F3F3-CEC7-4C28-8688-B58F4937D4E3}.Debug|x64.ActiveCfg = Debug|x86
 		{DBC2F3F3-CEC7-4C28-8688-B58F4937D4E3}.Debug|x86.ActiveCfg = Debug|x86
 		{DBC2F3F3-CEC7-4C28-8688-B58F4937D4E3}.Debug|x86.Build.0 = Debug|x86
+		{DBC2F3F3-CEC7-4C28-8688-B58F4937D4E3}.Release|Any CPU.ActiveCfg = Release|x86
+		{DBC2F3F3-CEC7-4C28-8688-B58F4937D4E3}.Release|x64.ActiveCfg = Release|x86
 		{DBC2F3F3-CEC7-4C28-8688-B58F4937D4E3}.Release|x86.ActiveCfg = Release|x86
 		{DBC2F3F3-CEC7-4C28-8688-B58F4937D4E3}.Release|x86.Build.0 = Release|x86
+		{CC93862F-C771-433F-9EB9-DA10C6D2AD4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC93862F-C771-433F-9EB9-DA10C6D2AD4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC93862F-C771-433F-9EB9-DA10C6D2AD4E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CC93862F-C771-433F-9EB9-DA10C6D2AD4E}.Debug|x64.Build.0 = Debug|Any CPU
+		{CC93862F-C771-433F-9EB9-DA10C6D2AD4E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CC93862F-C771-433F-9EB9-DA10C6D2AD4E}.Debug|x86.Build.0 = Debug|Any CPU
+		{CC93862F-C771-433F-9EB9-DA10C6D2AD4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC93862F-C771-433F-9EB9-DA10C6D2AD4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC93862F-C771-433F-9EB9-DA10C6D2AD4E}.Release|x64.ActiveCfg = Release|Any CPU
+		{CC93862F-C771-433F-9EB9-DA10C6D2AD4E}.Release|x64.Build.0 = Release|Any CPU
+		{CC93862F-C771-433F-9EB9-DA10C6D2AD4E}.Release|x86.ActiveCfg = Release|Any CPU
+		{CC93862F-C771-433F-9EB9-DA10C6D2AD4E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

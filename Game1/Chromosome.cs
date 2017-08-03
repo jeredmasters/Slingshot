@@ -37,5 +37,10 @@ namespace Slingshot
             }
             return species;
         }
+
+        public override string ToString()
+        {
+            return Convert.ToBase64String(DNA.ToArray());
+        }
     }
 }

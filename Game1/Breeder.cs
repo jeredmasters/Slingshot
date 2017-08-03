@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Slingshot
 {
-    class Breeder
+    class Breeder : IDisposable
     {
         Random _rnd = new Random();
         int _generation = 0;
@@ -25,8 +25,10 @@ namespace Slingshot
         /// <param name="populationSize"></param>
         /// <param name="mutationRate">0 - 1000</param>
         /// <param name="crossover">0 - 100</param>
-        public Breeder(int populationSize, int mutationRate, int crossover, int selectionPressure)
+        public Breeder(int complexity, int populationSize, int mutationRate, int crossover, int selectionPressure)
         {
+            _dnaMin = complexity;
+            _dnaMax = (int)(complexity * 1.5);
             _size = populationSize;
             _mutationRate = mutationRate;
             _crossover = crossover;
@@ -174,6 +176,12 @@ namespace Slingshot
             }
             return g;
         }
+
+        public void Dispose()
+        {
+            _genePool.Clear();
+        }
+
         public int Generation
         {
             get { return _generation; }

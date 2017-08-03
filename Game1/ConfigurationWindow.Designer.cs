@@ -39,17 +39,20 @@
             this.label4 = new System.Windows.Forms.Label();
             this.numDuration = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.label6 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numMutationRate)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numCrossoverRate)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSelectionPressure)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPopulationSize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numDuration)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(24, 105);
+            this.label1.Location = new System.Drawing.Point(24, 146);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(74, 13);
             this.label1.TabIndex = 0;
@@ -58,7 +61,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(24, 131);
+            this.label2.Location = new System.Drawing.Point(24, 172);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(80, 13);
             this.label2.TabIndex = 1;
@@ -67,7 +70,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(24, 157);
+            this.label3.Location = new System.Drawing.Point(24, 198);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(95, 13);
             this.label3.TabIndex = 4;
@@ -75,7 +78,7 @@
             // 
             // btnStart
             // 
-            this.btnStart.Location = new System.Drawing.Point(189, 206);
+            this.btnStart.Location = new System.Drawing.Point(189, 247);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(67, 29);
             this.btnStart.TabIndex = 6;
@@ -85,7 +88,7 @@
             // 
             // numMutationRate
             // 
-            this.numMutationRate.Location = new System.Drawing.Point(152, 103);
+            this.numMutationRate.Location = new System.Drawing.Point(152, 144);
             this.numMutationRate.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -97,14 +100,14 @@
             // 
             // numCrossoverRate
             // 
-            this.numCrossoverRate.Location = new System.Drawing.Point(152, 129);
+            this.numCrossoverRate.Location = new System.Drawing.Point(152, 170);
             this.numCrossoverRate.Name = "numCrossoverRate";
             this.numCrossoverRate.Size = new System.Drawing.Size(104, 20);
             this.numCrossoverRate.TabIndex = 8;
             // 
             // numSelectionPressure
             // 
-            this.numSelectionPressure.Location = new System.Drawing.Point(152, 155);
+            this.numSelectionPressure.Location = new System.Drawing.Point(152, 196);
             this.numSelectionPressure.Maximum = new decimal(new int[] {
             20,
             0,
@@ -176,11 +179,44 @@
             this.label5.TabIndex = 12;
             this.label5.Text = "Duration";
             // 
+            // numericUpDown1
+            // 
+            this.numericUpDown1.Location = new System.Drawing.Point(152, 85);
+            this.numericUpDown1.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.numericUpDown1.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(104, 20);
+            this.numericUpDown1.TabIndex = 15;
+            this.numericUpDown1.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(24, 87);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(57, 13);
+            this.label6.TabIndex = 14;
+            this.label6.Text = "Complexity";
+            // 
             // ConfigurationWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 261);
+            this.ClientSize = new System.Drawing.Size(284, 304);
+            this.Controls.Add(this.numericUpDown1);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.numDuration);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.numPopulationSize);
@@ -199,6 +235,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numSelectionPressure)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPopulationSize)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numDuration)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -217,5 +254,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.NumericUpDown numDuration;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.Label label6;
     }
 }

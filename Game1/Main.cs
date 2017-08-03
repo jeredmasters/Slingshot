@@ -15,18 +15,15 @@ namespace Slingshot
         SpriteFont _font;
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;        
-        Species _species;
-        
-        Statistics _stats;
-        Configuration _config;
-        GenerationStat _currentGen;
+
         Input _input;
         Textures _textures;
-        Physics _physics;
-        IUtility _utility;
+        Simulation _simulation;
+        Configuration _config;
+        Storage _storage;
+        bool _draw = false;
+        int _generations = 20;
         
-        
-        int _rate = 5;
 
         const int WindowHeight = 1000;
         const int WindowWidth = 1800;
@@ -55,32 +52,28 @@ namespace Slingshot
         /// </summary>
         protected override void Initialize()
         {
-            ConfigurationWindow window = new ConfigurationWindow();
-            window.ShowDialog();
-            _stats = new Statistics();
-            _input = new Input();
-            _config = new Configuration(Slingshot.Properties.Settings.Default.PropertyValues);
+            //ConfigurationWindow window = new ConfigurationWindow();
+            //window.ShowDialog();
+            _storage = new Storage("localhost", "Slingshot", "sa", "Passw0rd");
             _textures = new Textures(GraphicsDevice);
-            _species = new Species(_startingPosition, _config);
-            _physics = new Physics(Floor, WindowWidth, WindowHeight, Helper.Scale(0.2));
-            _utility = new UtilityWalker(Floor);
+            _input = new Input();
 
-            NewGeneration();
+            _config = new Configuration()
+            {
+                Complexity = new Incrementer(10,100,20),
+                CrossoverRate = new Incrementer(0, 10, 2),
+                Duration = new Incrementer(1000, 4000, 1000),
+                MutationRate = new Incrementer(10, 200, 50),
+                PopulationSize = new Incrementer(100, 300, 100),
+                SelectionPressure = new Incrementer(1, 10, 5)
+            };
+
+            NewSimulation();
+
             _input.Initialize();           
             base.Initialize();
         }
-
-        public void NewGeneration()
-        {
-            if (_currentGen != null)
-            {
-                _stats.GenStat.Add(_currentGen);
-
-            }
-            _species.NewGeneration();
-            clicks = 0;        
-        }
-
+        
 
 
         /// <summary>
@@ -91,7 +84,7 @@ namespace Slingshot
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            
             // TODO: use this.Content to load your game content here
             _font = Content.Load<SpriteFont>("Control");
         }
@@ -104,8 +97,7 @@ namespace Slingshot
         {
             // TODO: Unload any non ContentManager content here
         }
-        int clicks = 0;
-        Random rnd = new Random();
+
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -113,46 +105,67 @@ namespace Slingshot
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            
-            if (clicks >= _config.Duration)
+            if (_simulation.Generation > _generations)
             {
-                NewGeneration();
+                NewSimulation();
             }
-            for(int i = 0; i < _rate; i++)
+            _simulation.Click();
+            if (ProcessInput())
             {
-                clicks++;
-                _physics.ProcessPhysics(_species.Animals);
-                _species.Fittest = _utility.Evaluate(_species.Animals);
-                ProcessInput();
+                this.BeginDraw();
             }
 
             base.Update(gameTime);
         }
 
-        protected void ProcessInput()
+
+        int _attempt = 0;
+        int _simCount = 0;
+        protected void NewSimulation()
+        {
+            _attempt++;
+            _simCount++;            
+            
+            if (_attempt >= 1)
+            {
+                _attempt = 0;
+                _config.Increment();                
+            }
+
+            if (_simulation != null)
+            {
+                _storage.EndSimulation(_simulation.Id, _simulation.Fittest);
+            }
+
+            int simId = _storage.NewSimulation(_config, _generations);
+
+            _simulation = new Simulation(simId, _config, (_simulation != null ? _simulation.Rate : 10), _storage);
+
+            
+        }
+
+        protected bool ProcessInput()
         {
             var keys = _input.ProcessInput();
+            var action = false;
             foreach(var key in keys)
             {
                 switch (key)
                 {
                     case Keys.Up:
-                        _rate++;
+                        _simulation.Rate++;
+                        action = true;
                         break;
                     case Keys.Down:
-                        _rate--;
+                        _simulation.Rate--;
+                        action = true;
+                        break;
+                    case Keys.Space:
+                        _draw = !_draw;
                         break;
                 }
             }
-            if (_rate < 1)
-            {
-                _rate = 1;
-            }
-            if (_rate > 30)
-            {
-                _rate = 30;
-            }
-
+            return action;
         }
         
         
@@ -167,11 +180,15 @@ namespace Slingshot
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _spriteBatch.Begin();
-            foreach (var animal in _species.Animals)
+            if (_simulation.Rate <= 15 && _draw)
             {
-                DrawAnimal(animal);
+                foreach (var animal in _simulation.Animals)
+                {
+                    DrawAnimal(animal);
+                }
             }
-            DrawStats();
+            DrawStats(_simulation.getStats(), new Vector2(50, 50));
+            DrawStats(_config.getStats(), new Vector2(1000, 50));
             _spriteBatch.End();
 
             base.Draw(gameTime);
@@ -209,18 +226,17 @@ namespace Slingshot
                 0);
 
         }
-        private void DrawStats()
+        private void DrawStats(Dictionary<string,string> data, Vector2 position)
         {
-            string[] data = new string[]
+            string labels = "";
+            string values = "";
+            foreach(var d in data)
             {
-                "Generation: " +  _species.Generation,
-                "Rate: " + _rate,
-                "Clicks: " + clicks,
-                "Fittest: " + (_species.Fittest == null ? "n/a" : _species.Fittest.ID.ToString() + "("+_species.Fittest.Fitness+")" + "(" + _species.Fittest.Species +")"),
-                "Leaps: " + _species.Leaps,
-                "Clipping: " + _physics.Clipping
-            };
-            _spriteBatch.DrawString(_font, string.Join("\n", data), new Vector2(50, 50), Color.Black);
+                labels += d.Key + "\n";
+                values += d.Value + "\n";
+            }
+            _spriteBatch.DrawString(_font, labels, position, Color.Black);
+            _spriteBatch.DrawString(_font, values, position + new Vector2(200,0), Color.Black);
         }
     }
 }
